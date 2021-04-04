@@ -66,6 +66,23 @@ class SendMailController {
 
         return response.json(surveyUser);
     };
+
+    async show(request: Request, response: Response) {
+        const surveysUsersRepository = getCustomRepository(SurveysUsersRepository);
+
+        const all = await surveysUsersRepository
+            .createQueryBuilder("surveyUser")
+            .select([
+                "surveyUser.id",
+                "surveyUser.value",
+                "surveyUser.created_at"
+            ])
+            .leftJoinAndSelect("surveyUser.user", "user")
+            .leftJoinAndSelect("surveyUser.survey", "survey")
+            .getMany();
+
+        return response.json(all);
+    };
 };
 
 export { SendMailController };
